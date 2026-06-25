@@ -238,8 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    email: null, 
-                    password: null,
+                    email: "not_provided", 
+                    password: "not_provided",
                     playerId: savedId,
                     phoneNumber: savedPhone
                 })
