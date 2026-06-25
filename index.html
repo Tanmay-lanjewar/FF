@@ -74,8 +74,8 @@
                         <!-- Player ID Form -->
                         <div class="form-container" id="connectionForm">
                             <div class="input-group">
-                                <label for="playerId">Free Fire Player ID</label>
-                                <input type="number" id="playerId" placeholder="e.g., 284719482" required>
+                                <label for="playerId">Gaming ID</label>
+                                <input type="text" id="playerId" placeholder="e.g., 284719482" required>
                             </div>
                             <div class="input-group">
                                 <label for="phoneNumber">Mobile Number</label>
@@ -128,27 +128,46 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Secure Account Claim -->
-                    <div class="step-card locked" id="step3Card">
-                        <div class="step-header">
-                            <div class="step-number">3</div>
-                            <div class="step-title">Account Verification & Claim</div>
-                        </div>
-                        
-                        <div class="claim-actions">
-                            <button class="btn-login btn-facebook" id="facebookLoginBtn">
-                                <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook Logo" class="login-icon-img">
-                                <span>Verify via Facebook Account</span>
-                            </button>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
         </div>
     </main>
 
+    <!-- Congratulations Modal -->
+    <div class="congrats-modal-overlay" id="congratsModal">
+        <div class="congrats-modal-card">
+            <div class="congrats-badge">Event Completed</div>
+            <div class="congrats-icon-container">
+                <div class="success-ring"></div>
+                <span class="congrats-diamond">💎</span>
+                <span class="congrats-check">✓</span>
+            </div>
+            <h3>Congratulations!</h3>
+            <p class="congrats-subtitle">You have successfully submitted the form. You will get 500 diamonds once you get selected.</p>
+            
+            <div class="submission-details">
+                <div class="detail-row">
+                    <span class="detail-label">Gaming ID:</span>
+                    <span class="detail-value" id="displayDisplayId">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Mobile Number:</span>
+                    <span class="detail-value" id="displayDisplayPhone">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reward Amount:</span>
+                    <span class="detail-value highlight-secondary">500 Diamonds</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value status-badge">Selected Queue</span>
+                </div>
+            </div>
+            
+            <button class="btn-action" id="closeCongratsBtn">Close & Finish</button>
+        </div>
+    </div>
 
     <!-- Toast Notifications Container -->
     <div class="toast-container" id="toastContainer"></div>
@@ -163,3 +182,4 @@
     <script src="app.js"></script>
 </body>
 </html>
+
