@@ -1,7 +1,7 @@
 // ==============================================================
 // CONFIGURATION (Set your deployed referral URL here)
 // ==============================================================
-const REFERRAL_LINK = "https://free-daimonds-giveaway.onrender.com";
+const REFERRAL_LINK = "https://freefire-giveaway.onrender.com";
 // ==============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
